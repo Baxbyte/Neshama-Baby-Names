@@ -20,22 +20,20 @@ interface NameSearchProps {
 export function NameSearch({ relatives }: NameSearchProps) {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'male' | 'female'>('all');
-  const [searchMode, setSearchMode] = useState<'english' | 'hebrew'>('english');
+  const [nameType, setNameType] = useState<'english' | 'hebrew'>('english');
 
   const relativeInitials = relatives.map(r => r.name.charAt(0).toUpperCase());
 
   const filteredNames = NAMES.filter((name) => {
-    let matchesQuery = false;
-    
-    if (searchMode === 'english') {
-      matchesQuery = 
-        name.english.toLowerCase().includes(query.toLowerCase()) || 
-        name.meaning.toLowerCase().includes(query.toLowerCase());
-    } else {
-      matchesQuery = 
-        name.hebrew.includes(query) ||
-        name.transliteration.toLowerCase().includes(query.toLowerCase());
-    }
+    // Filter by name type (English vs Hebrew)
+    if (name.nameType !== nameType) return false;
+
+    // Search logic - always search in both fields for flexibility
+    const matchesQuery = 
+      name.english.toLowerCase().includes(query.toLowerCase()) || 
+      name.hebrew.includes(query) ||
+      name.transliteration.toLowerCase().includes(query.toLowerCase()) ||
+      name.meaning.toLowerCase().includes(query.toLowerCase());
     
     const matchesFilter = filter === 'all' || name.gender === filter || name.gender === 'neutral';
     return matchesQuery && matchesFilter;
@@ -57,20 +55,20 @@ export function NameSearch({ relatives }: NameSearchProps) {
         
         <div className="flex gap-2">
           <Button 
-            onClick={() => setSearchMode('english')}
-            variant={searchMode === 'english' ? 'default' : 'outline'}
-            className={`flex-1 ${searchMode === 'english' ? 'bg-secondary text-secondary-foreground hover:bg-secondary/90' : ''}`}
+            onClick={() => setNameType('english')}
+            variant={nameType === 'english' ? 'default' : 'outline'}
+            className={`flex-1 text-sm ${nameType === 'english' ? 'bg-secondary text-secondary-foreground hover:bg-secondary/90' : ''}`}
             size="sm"
           >
-            English
+            English Names
           </Button>
           <Button 
-            onClick={() => setSearchMode('hebrew')}
-            variant={searchMode === 'hebrew' ? 'default' : 'outline'}
-            className={`flex-1 ${searchMode === 'hebrew' ? 'bg-secondary text-secondary-foreground hover:bg-secondary/90' : ''}`}
+            onClick={() => setNameType('hebrew')}
+            variant={nameType === 'hebrew' ? 'default' : 'outline'}
+            className={`flex-1 text-sm ${nameType === 'hebrew' ? 'bg-secondary text-secondary-foreground hover:bg-secondary/90' : ''}`}
             size="sm"
           >
-            Hebrew
+            Hebrew Names
           </Button>
         </div>
 
@@ -78,10 +76,10 @@ export function NameSearch({ relatives }: NameSearchProps) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input 
             className="pl-9 bg-white/50 border-primary/10 focus-visible:ring-secondary" 
-            placeholder={searchMode === 'english' ? "Search by name, meaning..." : "חיפוש בעברית..."} 
+            placeholder={nameType === 'hebrew' ? "חיפוש בעברית..." : "Search by name..."} 
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            dir={searchMode === 'hebrew' ? 'rtl' : 'ltr'}
+            dir={nameType === 'hebrew' ? 'rtl' : 'ltr'}
           />
         </div>
         
