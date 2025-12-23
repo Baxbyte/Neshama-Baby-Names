@@ -5,6 +5,7 @@ import { Search } from 'lucide-react';
 import { NameCard } from './NameCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
 
 interface Relative {
   id: string;
@@ -19,13 +20,23 @@ interface NameSearchProps {
 export function NameSearch({ relatives }: NameSearchProps) {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'male' | 'female'>('all');
+  const [searchMode, setSearchMode] = useState<'english' | 'hebrew'>('english');
 
   const relativeInitials = relatives.map(r => r.name.charAt(0).toUpperCase());
 
   const filteredNames = NAMES.filter((name) => {
-    const matchesQuery = name.english.toLowerCase().includes(query.toLowerCase()) || 
-                         name.hebrew.includes(query) ||
-                         name.meaning.toLowerCase().includes(query.toLowerCase());
+    let matchesQuery = false;
+    
+    if (searchMode === 'english') {
+      matchesQuery = 
+        name.english.toLowerCase().includes(query.toLowerCase()) || 
+        name.meaning.toLowerCase().includes(query.toLowerCase());
+    } else {
+      matchesQuery = 
+        name.hebrew.includes(query) ||
+        name.transliteration.toLowerCase().includes(query.toLowerCase());
+    }
+    
     const matchesFilter = filter === 'all' || name.gender === filter || name.gender === 'neutral';
     return matchesQuery && matchesFilter;
   });
@@ -41,17 +52,39 @@ export function NameSearch({ relatives }: NameSearchProps) {
 
   return (
     <div className="flex flex-col h-full space-y-4">
-      <div className="space-y-2">
+      <div className="space-y-3">
         <h2 className="text-xl font-serif text-primary">Discover Names</h2>
+        
+        <div className="flex gap-2">
+          <Button 
+            onClick={() => setSearchMode('english')}
+            variant={searchMode === 'english' ? 'default' : 'outline'}
+            className={`flex-1 ${searchMode === 'english' ? 'bg-secondary text-secondary-foreground hover:bg-secondary/90' : ''}`}
+            size="sm"
+          >
+            English
+          </Button>
+          <Button 
+            onClick={() => setSearchMode('hebrew')}
+            variant={searchMode === 'hebrew' ? 'default' : 'outline'}
+            className={`flex-1 ${searchMode === 'hebrew' ? 'bg-secondary text-secondary-foreground hover:bg-secondary/90' : ''}`}
+            size="sm"
+          >
+            Hebrew
+          </Button>
+        </div>
+
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input 
             className="pl-9 bg-white/50 border-primary/10 focus-visible:ring-secondary" 
-            placeholder="Search by name, meaning..." 
+            placeholder={searchMode === 'english' ? "Search by name, meaning..." : "חיפוש בעברית..."} 
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            dir={searchMode === 'hebrew' ? 'rtl' : 'ltr'}
           />
         </div>
+        
         <Tabs defaultValue="all" className="w-full" onValueChange={(v) => setFilter(v as any)}>
           <TabsList className="w-full bg-primary/5">
             <TabsTrigger value="all" className="flex-1">All</TabsTrigger>
