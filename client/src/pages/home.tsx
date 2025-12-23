@@ -119,32 +119,32 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            {/* Full Name Preview */}
-            {(firstName || middleName || hebrewName) && (
-              <Card className="bg-gradient-to-br from-secondary/10 to-primary/10 border-secondary/20 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="text-center text-2xl">Your Baby's Full Name</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Full English Name */}
-                  <div className="text-center pb-4 border-b border-primary/10">
-                    <div className="text-4xl md:text-5xl font-serif text-primary font-bold mb-2">
-                      {firstName?.english} {middleName?.english} {lastName}
-                    </div>
-                    <div className="text-xs uppercase tracking-widest text-muted-foreground">Full English Name</div>
+            {/* Full Name Preview - Always Visible */}
+            <Card className="bg-gradient-to-br from-secondary/10 to-primary/10 border-secondary/20 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-center text-2xl">Your Baby's Full Name</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Full English Name */}
+                <div className="text-center pb-4 border-b border-primary/10">
+                  <div className="text-4xl md:text-5xl font-serif text-primary font-bold mb-2">
+                    {firstName?.english ? `${firstName.english} ${middleName?.english || ''}`.trim() : 'First'} {lastName}
                   </div>
+                  <div className="text-xs uppercase tracking-widest text-muted-foreground">Full English Name</div>
+                </div>
 
-                  {/* Hebrew Name */}
-                  {hebrewName && (
-                    <div className="text-center pb-4 border-b border-primary/10">
-                      <div className="text-3xl md:text-4xl text-secondary-foreground font-serif" style={{ direction: 'rtl' }}>
-                        {hebrewName.hebrew}
-                      </div>
-                      <div className="text-xs uppercase tracking-widest text-muted-foreground mt-2">Hebrew Name for Religious Use</div>
+                {/* Hebrew Name */}
+                {hebrewName && (
+                  <div className="text-center pb-4 border-b border-primary/10">
+                    <div className="text-3xl md:text-4xl text-secondary-foreground font-serif" style={{ direction: 'rtl' }}>
+                      {hebrewName.hebrew}
                     </div>
-                  )}
+                    <div className="text-xs uppercase tracking-widest text-muted-foreground mt-2">Hebrew Name for Religious Use</div>
+                  </div>
+                )}
 
-                  {/* Meanings */}
+                {/* Meanings */}
+                {getMeanings().length > 0 && (
                   <div className="pb-4 border-b border-primary/10">
                     <h4 className="text-sm font-bold uppercase text-primary mb-3 tracking-wider">Combined Meaning</h4>
                     <div className="space-y-2">
@@ -156,24 +156,30 @@ export default function Home() {
                       ))}
                     </div>
                   </div>
+                )}
 
-                  {/* Honored Relatives */}
-                  {honoredRelatives.length > 0 && (
-                    <div>
-                      <h4 className="text-sm font-bold uppercase text-primary mb-3 tracking-wider">Honoring Their Memory</h4>
-                      <div className="space-y-2">
-                        {honoredRelatives.map((relative, i) => (
-                          <div key={i} className="text-sm text-secondary-foreground flex items-center gap-2 bg-secondary/10 px-3 py-2 rounded-lg border border-secondary/20">
-                            <span className="w-2 h-2 rounded-full bg-secondary" />
-                            {relative}
-                          </div>
-                        ))}
-                      </div>
+                {/* Honored Relatives */}
+                {honoredRelatives.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-bold uppercase text-primary mb-3 tracking-wider">Honoring Their Memory</h4>
+                    <div className="space-y-2">
+                      {honoredRelatives.map((relative, i) => (
+                        <div key={i} className="text-sm text-secondary-foreground flex items-center gap-2 bg-secondary/10 px-3 py-2 rounded-lg border border-secondary/20">
+                          <span className="w-2 h-2 rounded-full bg-secondary" />
+                          {relative}
+                        </div>
+                      ))}
                     </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
+                  </div>
+                )}
+
+                {!firstName && !middleName && !hebrewName && !lastName && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p className="text-sm">Select names and enter a family name to see the full preview</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <div className="bg-primary/5 p-6 rounded-xl border border-primary/10">
