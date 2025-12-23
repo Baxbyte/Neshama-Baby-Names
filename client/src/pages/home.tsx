@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { DndContext, DragOverlay, DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import { Link } from "wouter";
 import { RelativeInput } from "@/components/RelativeInput";
 import { NameSearch } from "@/components/NameSearch";
 import { NameBuilder } from "@/components/NameBuilder";
@@ -8,6 +9,9 @@ import { NameData } from "@/lib/data";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { BookmarkPlus, BookmarkCheck } from "lucide-react";
+import { toast } from "sonner";
 
 interface Relative {
   id: string;
@@ -22,6 +26,7 @@ export default function Home() {
   const [hebrewName, setHebrewName] = useState<NameData | null>(null);
   const [lastName, setLastName] = useState('');
   const [activeDragItem, setActiveDragItem] = useState<NameData | null>(null);
+  const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveDragItem(event.active.data.current?.name);
@@ -66,6 +71,34 @@ export default function Home() {
     if (middleName) meanings.push(middleName.meaning);
     if (hebrewName) meanings.push(hebrewName.meaning);
     return meanings;
+  };
+
+  const saveName = () => {
+    if (!firstName && !middleName && !hebrewName && !lastName) {
+      toast.error("Please select at least one name to save");
+      return;
+    }
+
+    const newSavedName = {
+      id: Date.now().toString(),
+      firstName: firstName?.english || 'First',
+      middleName: middleName?.english || '',
+      hebrewName: hebrewName?.english || '',
+      lastName: lastName || '',
+      firstNameHebrew: firstName?.hebrew || '',
+      hebrewNameHebrew: hebrewName?.hebrew || '',
+      savedAt: new Date().toISOString(),
+    };
+
+    const existing = localStorage.getItem("ledor-vador-saved-names");
+    const saved = existing ? JSON.parse(existing) : [];
+    saved.push(newSavedName);
+    localStorage.setItem("ledor-vador-saved-names", JSON.stringify(saved));
+
+    // Show confirmation
+    setShowSaveConfirmation(true);
+    setTimeout(() => setShowSaveConfirmation(false), 2000);
+    toast.success("Name idea saved!");
   };
 
   return (
@@ -118,6 +151,43 @@ export default function Home() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Save and View Buttons */}
+            <div className="flex gap-4 items-center justify-center">
+              <Button
+                onClick={saveName}
+                className="bg-secondary hover:bg-secondary/90 text-white px-8 py-6 text-lg rounded-lg shadow-md transition-all hover:shadow-lg flex items-center gap-2"
+                data-testid="button-save-name"
+              >
+                <BookmarkPlus className="w-5 h-5" />
+                Save Name Idea
+              </Button>
+              <Link href="/saved">
+                <Button
+                  variant="outline"
+                  className="px-8 py-6 text-lg"
+                  data-testid="link-saved-names"
+                >
+                  <BookmarkCheck className="w-5 h-5 mr-2" />
+                  View Saved Names
+                </Button>
+              </Link>
+            </div>
+
+            {/* Save Confirmation Toast - appears briefly */}
+            {showSaveConfirmation && (
+              <div 
+                className="fixed top-8 left-1/2 transform -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4"
+                onClick={() => setShowSaveConfirmation(false)}
+              >
+                <Card className="bg-gradient-to-r from-secondary to-green-500 border-none shadow-xl">
+                  <CardContent className="py-4 px-8 flex items-center gap-3 text-white">
+                    <BookmarkCheck className="w-5 h-5 flex-shrink-0" />
+                    <span className="font-semibold">Name idea saved successfully!</span>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
 
             {/* Full Name Preview - Always Visible */}
             <Card className="bg-gradient-to-br from-secondary/10 to-primary/10 border-secondary/20 shadow-lg">
