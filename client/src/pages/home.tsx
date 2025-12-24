@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookmarkPlus, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createSavedName } from "@/lib/api";
 import { useAppState } from "@/lib/context";
 
@@ -30,6 +30,7 @@ export default function Home() {
     setLastName,
   } = useAppState();
   
+  const queryClient = useQueryClient();
   const [activeDragItem, setActiveDragItem] = useState<NameData | null>(null);
   const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
@@ -81,6 +82,7 @@ export default function Home() {
   const saveMutation = useMutation({
     mutationFn: createSavedName,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["saved-names"] });
       setShowSaveConfirmation(true);
       setTimeout(() => setShowSaveConfirmation(false), 2000);
       toast.success("Name idea saved!");
