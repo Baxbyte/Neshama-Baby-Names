@@ -5,6 +5,7 @@ import { RelativeInput } from "@/components/RelativeInput";
 import { NameSearch } from "@/components/NameSearch";
 import { NameBuilder } from "@/components/NameBuilder";
 import { NameCard } from "@/components/NameCard";
+import { Footer } from "@/components/Footer";
 import { NameData } from "@/lib/data";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -302,6 +303,8 @@ export default function Home() {
           </div>
         ) : null}
       </DragOverlay>
+
+      <Footer />
 
     </DndContext>
   );

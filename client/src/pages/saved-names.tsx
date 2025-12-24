@@ -8,6 +8,7 @@ import { Trash2, ArrowLeft, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getSavedNames, deleteSavedName } from "@/lib/api";
+import { Footer } from "@/components/Footer";
 export default function SavedNames() {
   const [email, setEmail] = useState("");
   const [showEmailForm, setShowEmailForm] = useState(false);
@@ -58,9 +59,17 @@ export default function SavedNames() {
 
   return (
     <div className="min-h-screen pb-20 px-4 md:px-8 pt-8 bg-gradient-to-b from-orange-50 via-blue-50 to-white">
+      {/* Main Header - matching home page */}
+      <header className="max-w-7xl mx-auto mb-12 text-center">
+        <Link href="/">
+          <h1 className="text-4xl md:text-6xl font-display text-primary mb-3 cursor-pointer hover:opacity-80 transition-opacity">Neshama Baby Names</h1>
+        </Link>
+        <div className="h-1 w-24 bg-secondary mx-auto mt-6 rounded-full" />
+      </header>
+
       <div className="max-w-4xl mx-auto">
         
-        {/* Header with back button */}
+        {/* Page title with back button */}
         <div className="flex items-center gap-4 mb-8">
           <Link href="/">
             <Button variant="outline" size="icon" className="rounded-full">
@@ -68,7 +77,7 @@ export default function SavedNames() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-4xl md:text-5xl font-display text-primary">Your Saved Names</h1>
+            <h2 className="text-3xl md:text-4xl font-display text-primary">Your Saved Names</h2>
             <p className="text-muted-foreground mt-1">Review and manage your baby name ideas</p>
           </div>
         </div>
@@ -211,6 +220,8 @@ export default function SavedNames() {
           </>
         )}
       </div>
+      
+      <Footer />
     </div>
   );
 }
