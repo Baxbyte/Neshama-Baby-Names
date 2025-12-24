@@ -1,11 +1,20 @@
 import type { SavedName, InsertSavedName } from "@shared/schema";
 
 export async function getSavedNames(): Promise<SavedName[]> {
-  const response = await fetch("/api/saved-names");
-  if (!response.ok) {
-    throw new Error("Failed to fetch saved names");
+  try {
+    const response = await fetch("/api/saved-names");
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Fetch failed:", response.status, errorText);
+      throw new Error(`Failed to fetch saved names: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log("Fetch successful:", data);
+    return data;
+  } catch (error) {
+    console.error("Fetch error:", error);
+    throw error;
   }
-  return response.json();
 }
 
 export async function createSavedName(name: InsertSavedName): Promise<SavedName> {
