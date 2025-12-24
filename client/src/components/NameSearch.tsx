@@ -15,9 +15,10 @@ interface Relative {
 
 interface NameSearchProps {
   relatives: Relative[];
+  onAddName?: (name: NameData, type: 'first' | 'middle' | 'hebrew') => void;
 }
 
-export function NameSearch({ relatives }: NameSearchProps) {
+export function NameSearch({ relatives, onAddName }: NameSearchProps) {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'male' | 'female'>('all');
   const [nameType, setNameType] = useState<'english' | 'hebrew'>('english');
@@ -39,13 +40,13 @@ export function NameSearch({ relatives }: NameSearchProps) {
     return matchesQuery && matchesFilter;
   });
 
-  // Sort: Names matching relative initials first
+  // Sort: Names matching relative initials first, then alphabetically
   const sortedNames = [...filteredNames].sort((a, b) => {
-    const aMatch = relativeInitials.includes(a.english.charAt(0));
-    const bMatch = relativeInitials.includes(b.english.charAt(0));
+    const aMatch = relativeInitials.includes(a.english.charAt(0).toUpperCase());
+    const bMatch = relativeInitials.includes(b.english.charAt(0).toUpperCase());
     if (aMatch && !bMatch) return -1;
     if (!aMatch && bMatch) return 1;
-    return 0;
+    return a.english.localeCompare(b.english);
   });
 
   return (
@@ -53,22 +54,22 @@ export function NameSearch({ relatives }: NameSearchProps) {
       <div className="space-y-3">
         <h2 className="text-xl font-serif text-primary">Discover Names</h2>
         
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full overflow-hidden">
           <Button 
             onClick={() => setNameType('english')}
             variant={nameType === 'english' ? 'default' : 'outline'}
-            className={`flex-1 text-sm ${nameType === 'english' ? 'bg-secondary text-secondary-foreground hover:bg-secondary/90' : ''}`}
+            className={`flex-1 text-xs sm:text-sm min-w-0 px-2 sm:px-4 ${nameType === 'english' ? 'bg-secondary text-secondary-foreground hover:bg-secondary/90' : ''}`}
             size="sm"
           >
-            English Names
+            English
           </Button>
           <Button 
             onClick={() => setNameType('hebrew')}
             variant={nameType === 'hebrew' ? 'default' : 'outline'}
-            className={`flex-1 text-sm ${nameType === 'hebrew' ? 'bg-secondary text-secondary-foreground hover:bg-secondary/90' : ''}`}
+            className={`flex-1 text-xs sm:text-sm min-w-0 px-2 sm:px-4 ${nameType === 'hebrew' ? 'bg-secondary text-secondary-foreground hover:bg-secondary/90' : ''}`}
             size="sm"
           >
-            Hebrew Names
+            Hebrew
           </Button>
         </div>
 
@@ -101,6 +102,7 @@ export function NameSearch({ relatives }: NameSearchProps) {
                  key={name.id} 
                  name={name} 
                  honoring={honoredRelative ? honoredRelative.name : null}
+                 onAdd={onAddName}
                />
              );
           })}

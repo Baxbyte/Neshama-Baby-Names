@@ -12,19 +12,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookmarkPlus, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
-
-interface Relative {
-  id: string;
-  name: string;
-  relation: string;
-}
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createSavedName } from "@/lib/api";
+import { useAppState } from "@/lib/context";
 
 export default function Home() {
-  const [relatives, setRelatives] = useState<Relative[]>([]);
-  const [firstName, setFirstName] = useState<NameData | null>(null);
-  const [middleName, setMiddleName] = useState<NameData | null>(null);
-  const [hebrewName, setHebrewName] = useState<NameData | null>(null);
-  const [lastName, setLastName] = useState('');
+  const {
+    relatives,
+    setRelatives,
+    firstName,
+    setFirstName,
+    middleName,
+    setMiddleName,
+    hebrewName,
+    setHebrewName,
+    lastName,
+    setLastName,
+  } = useAppState();
+  
+  const queryClient = useQueryClient();
   const [activeDragItem, setActiveDragItem] = useState<NameData | null>(null);
   const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
@@ -73,32 +79,47 @@ export default function Home() {
     return meanings;
   };
 
+  const saveMutation = useMutation({
+    mutationFn: createSavedName,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["saved-names"] });
+      setShowSaveConfirmation(true);
+      setTimeout(() => setShowSaveConfirmation(false), 2000);
+      toast.success("Name idea saved!");
+    },
+    onError: () => {
+      toast.error("Failed to save name. Please try again.");
+    },
+  });
+
   const saveName = () => {
     if (!firstName && !middleName && !hebrewName && !lastName) {
       toast.error("Please select at least one name to save");
       return;
     }
 
-    const newSavedName = {
-      id: Date.now().toString(),
+    saveMutation.mutate({
       firstName: firstName?.english || 'First',
       middleName: middleName?.english || '',
       hebrewName: hebrewName?.english || '',
       lastName: lastName || '',
       firstNameHebrew: firstName?.hebrew || '',
       hebrewNameHebrew: hebrewName?.hebrew || '',
-      savedAt: new Date().toISOString(),
-    };
+    });
+  };
 
-    const existing = localStorage.getItem("ledor-vador-saved-names");
-    const saved = existing ? JSON.parse(existing) : [];
-    saved.push(newSavedName);
-    localStorage.setItem("ledor-vador-saved-names", JSON.stringify(saved));
-
-    // Show confirmation
-    setShowSaveConfirmation(true);
-    setTimeout(() => setShowSaveConfirmation(false), 2000);
-    toast.success("Name idea saved!");
+  const handleAddName = (name: NameData, type: 'first' | 'middle' | 'hebrew') => {
+    if (type === 'first') setFirstName(name);
+    if (type === 'middle') setMiddleName(name);
+    if (type === 'hebrew') setHebrewName(name);
+    
+    // Optional: Scroll to the builder on mobile
+    if (window.innerWidth < 768) {
+      const builder = document.getElementById('name-builder');
+      builder?.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    toast.success(`Added ${name.english} as ${type} name`);
   };
 
   return (
@@ -106,10 +127,7 @@ export default function Home() {
       <div className="min-h-screen pb-20 px-4 md:px-8 pt-8">
         
         <header className="max-w-7xl mx-auto mb-12 text-center">
-          <h1 className="text-4xl md:text-6xl font-display text-primary mb-3">Ledor Vador</h1>
-          <p className="text-lg md:text-xl text-muted-foreground font-light max-w-2xl mx-auto">
-            "From Generation to Generation"
-          </p>
+          <h1 className="text-4xl md:text-6xl font-display text-primary mb-3">Neshama Baby Names</h1>
           <div className="h-1 w-24 bg-secondary mx-auto mt-6 rounded-full" />
         </header>
 
@@ -120,12 +138,12 @@ export default function Home() {
             <RelativeInput relatives={relatives} setRelatives={setRelatives} />
             
             <div className="h-[650px] bg-white/40 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-sm flex flex-col">
-              <NameSearch relatives={relatives} />
+              <NameSearch relatives={relatives} onAddName={handleAddName} />
             </div>
           </div>
 
           {/* Main Content Area */}
-          <div className="space-y-8">
+          <div className="space-y-8" id="name-builder">
             <NameBuilder 
               firstName={firstName} 
               setFirstName={setFirstName}
@@ -254,11 +272,15 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <div className="bg-primary/5 p-6 rounded-xl border border-primary/10">
                   <h3 className="font-serif text-lg text-primary mb-2">Naming Traditions</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                     Ashkenazi tradition typically honors deceased relatives to keep their memory alive. 
                     Sephardic tradition often honors living grandparents as a sign of respect and continuity.
                     Consider the meaning of the name and the character of the person you are honoring.
                   </p>
+                  <div className="pt-4 border-t border-primary/10">
+                    <p className="font-serif text-primary italic">Ledor Vador</p>
+                    <p className="text-xs text-muted-foreground">"From Generation to Generation"</p>
+                  </div>
                </div>
                <div className="bg-secondary/10 p-6 rounded-xl border border-secondary/20">
                   <h3 className="font-serif text-lg text-secondary-foreground mb-2">Did you know?</h3>
