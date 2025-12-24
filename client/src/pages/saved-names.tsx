@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,33 +6,41 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Trash2, ArrowLeft, Mail } from "lucide-react";
 import { toast } from "sonner";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getSavedNames, deleteSavedName } from "@/lib/api";
 import { Footer } from "@/components/Footer";
+
+interface LocalSavedName {
+  id: string;
+  firstName: string;
+  middleName: string;
+  hebrewName: string;
+  lastName: string;
+  firstNameHebrew: string;
+  hebrewNameHebrew: string;
+  savedAt: string;
+}
+
+const SAVED_NAMES_KEY = "neshama-saved-names";
+
 export default function SavedNames() {
   const [email, setEmail] = useState("");
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
-  const queryClient = useQueryClient();
+  const [savedNames, setSavedNames] = useState<LocalSavedName[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { data: savedNames = [], isLoading } = useQuery({
-    queryKey: ["saved-names"],
-    queryFn: getSavedNames,
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: deleteSavedName,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["saved-names"] });
-      toast.success("Name idea removed");
-    },
-    onError: () => {
-      toast.error("Failed to delete name. Please try again.");
-    },
-  });
+  useEffect(() => {
+    const stored = localStorage.getItem(SAVED_NAMES_KEY);
+    if (stored) {
+      setSavedNames(JSON.parse(stored));
+    }
+    setIsLoading(false);
+  }, []);
 
   const removeSavedName = (id: string) => {
-    deleteMutation.mutate(id);
+    const updated = savedNames.filter(name => name.id !== id);
+    setSavedNames(updated);
+    localStorage.setItem(SAVED_NAMES_KEY, JSON.stringify(updated));
+    toast.success("Name idea removed");
   };
 
   const handleEmailSubmit = (e: React.FormEvent) => {
@@ -116,13 +124,17 @@ export default function SavedNames() {
                       </div>
 
                       {/* Hebrew Name if available */}
-                      {nameIdea.hebrewName && (
+                      {(nameIdea.hebrewName || nameIdea.hebrewNameHebrew) && (
                         <div className="border-t border-primary/10 pt-3">
                           <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Hebrew Name</p>
-                          <p className="text-2xl font-serif text-secondary-foreground" style={{ direction: 'rtl' }}>
-                            {nameIdea.hebrewNameHebrew}
-                          </p>
-                          <p className="text-sm text-muted-foreground mt-1">{nameIdea.hebrewName}</p>
+                          {nameIdea.hebrewNameHebrew && (
+                            <p className="text-2xl font-serif text-secondary-foreground" style={{ direction: 'rtl' }}>
+                              {nameIdea.hebrewNameHebrew}
+                            </p>
+                          )}
+                          {nameIdea.hebrewName && (
+                            <p className="text-sm text-muted-foreground mt-1">{nameIdea.hebrewName}</p>
+                          )}
                         </div>
                       )}
 

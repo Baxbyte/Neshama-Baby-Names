@@ -13,9 +13,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookmarkPlus, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createSavedName } from "@/lib/api";
 import { useAppState } from "@/lib/context";
+
+interface LocalSavedName {
+  id: string;
+  firstName: string;
+  middleName: string;
+  hebrewName: string;
+  lastName: string;
+  firstNameHebrew: string;
+  hebrewNameHebrew: string;
+  savedAt: string;
+}
+
+const SAVED_NAMES_KEY = "neshama-saved-names";
 
 export default function Home() {
   const {
@@ -31,7 +42,6 @@ export default function Home() {
     setLastName,
   } = useAppState();
   
-  const queryClient = useQueryClient();
   const [activeDragItem, setActiveDragItem] = useState<NameData | null>(null);
   const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
@@ -80,33 +90,31 @@ export default function Home() {
     return meanings;
   };
 
-  const saveMutation = useMutation({
-    mutationFn: createSavedName,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["saved-names"] });
-      setShowSaveConfirmation(true);
-      setTimeout(() => setShowSaveConfirmation(false), 2000);
-      toast.success("Name idea saved!");
-    },
-    onError: () => {
-      toast.error("Failed to save name. Please try again.");
-    },
-  });
-
   const saveName = () => {
     if (!firstName && !middleName && !hebrewName && !lastName) {
       toast.error("Please select at least one name to save");
       return;
     }
 
-    saveMutation.mutate({
+    const newSavedName: LocalSavedName = {
+      id: crypto.randomUUID(),
       firstName: firstName?.english || 'First',
       middleName: middleName?.english || '',
       hebrewName: hebrewName?.english || '',
       lastName: lastName || '',
       firstNameHebrew: firstName?.hebrew || '',
       hebrewNameHebrew: hebrewName?.hebrew || '',
-    });
+      savedAt: new Date().toISOString(),
+    };
+
+    const existing = localStorage.getItem(SAVED_NAMES_KEY);
+    const savedNames: LocalSavedName[] = existing ? JSON.parse(existing) : [];
+    savedNames.unshift(newSavedName);
+    localStorage.setItem(SAVED_NAMES_KEY, JSON.stringify(savedNames));
+
+    setShowSaveConfirmation(true);
+    setTimeout(() => setShowSaveConfirmation(false), 2000);
+    toast.success("Name idea saved!");
   };
 
   const handleAddName = (name: NameData, type: 'first' | 'middle' | 'hebrew') => {
