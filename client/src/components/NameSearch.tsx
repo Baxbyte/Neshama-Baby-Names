@@ -15,9 +15,10 @@ interface Relative {
 
 interface NameSearchProps {
   relatives: Relative[];
+  onAddName?: (name: NameData, type: 'first' | 'middle' | 'hebrew') => void;
 }
 
-export function NameSearch({ relatives }: NameSearchProps) {
+export function NameSearch({ relatives, onAddName }: NameSearchProps) {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'male' | 'female'>('all');
   const [nameType, setNameType] = useState<'english' | 'hebrew'>('english');
@@ -101,6 +102,7 @@ export function NameSearch({ relatives }: NameSearchProps) {
                  key={name.id} 
                  name={name} 
                  honoring={honoredRelative ? honoredRelative.name : null}
+                 onAdd={onAddName}
                />
              );
           })}
