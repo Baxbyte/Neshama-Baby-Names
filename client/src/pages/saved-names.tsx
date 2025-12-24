@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,36 +6,32 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Trash2, ArrowLeft, Mail } from "lucide-react";
 import { toast } from "sonner";
-
-interface SavedName {
-  id: string;
-  firstName: string;
-  middleName: string;
-  hebrewName: string;
-  lastName: string;
-  firstNameHebrew: string;
-  hebrewNameHebrew: string;
-  savedAt: string;
-}
-
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getSavedNames, deleteSavedName } from "@/lib/api";
 export default function SavedNames() {
-  const [savedNames, setSavedNames] = useState<SavedName[]>([]);
   const [email, setEmail] = useState("");
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const stored = localStorage.getItem("ledor-vador-saved-names");
-    if (stored) {
-      setSavedNames(JSON.parse(stored));
-    }
-  }, []);
+  const { data: savedNames = [], isLoading } = useQuery({
+    queryKey: ["saved-names"],
+    queryFn: getSavedNames,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteSavedName,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["saved-names"] });
+      toast.success("Name idea removed");
+    },
+    onError: () => {
+      toast.error("Failed to delete name. Please try again.");
+    },
+  });
 
   const removeSavedName = (id: string) => {
-    const updated = savedNames.filter(n => n.id !== id);
-    setSavedNames(updated);
-    localStorage.setItem("ledor-vador-saved-names", JSON.stringify(updated));
-    toast.success("Name idea removed");
+    deleteMutation.mutate(id);
   };
 
   const handleEmailSubmit = (e: React.FormEvent) => {
@@ -77,7 +73,13 @@ export default function SavedNames() {
           </div>
         </div>
 
-        {savedNames.length === 0 ? (
+        {isLoading ? (
+          <Card className="bg-white/60 backdrop-blur-md border-white/50">
+            <CardContent className="pt-12 pb-12 text-center">
+              <p className="text-lg text-muted-foreground">Loading saved names...</p>
+            </CardContent>
+          </Card>
+        ) : savedNames.length === 0 ? (
           <Card className="bg-white/60 backdrop-blur-md border-white/50">
             <CardContent className="pt-12 pb-12 text-center">
               <p className="text-lg text-muted-foreground mb-6">No saved name ideas yet</p>
@@ -117,7 +119,11 @@ export default function SavedNames() {
 
                       {/* Saved date */}
                       <p className="text-xs text-muted-foreground pt-2">
-                        Saved on {new Date(nameIdea.savedAt).toLocaleDateString()}
+                        Saved on {new Date(nameIdea.savedAt).toLocaleDateString('en-US', { 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        })}
                       </p>
                     </div>
 

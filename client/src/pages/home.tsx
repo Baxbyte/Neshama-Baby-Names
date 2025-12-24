@@ -12,6 +12,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookmarkPlus, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import { createSavedName } from "@/lib/api";
 
 interface Relative {
   id: string;
@@ -73,32 +75,32 @@ export default function Home() {
     return meanings;
   };
 
+  const saveMutation = useMutation({
+    mutationFn: createSavedName,
+    onSuccess: () => {
+      setShowSaveConfirmation(true);
+      setTimeout(() => setShowSaveConfirmation(false), 2000);
+      toast.success("Name idea saved!");
+    },
+    onError: () => {
+      toast.error("Failed to save name. Please try again.");
+    },
+  });
+
   const saveName = () => {
     if (!firstName && !middleName && !hebrewName && !lastName) {
       toast.error("Please select at least one name to save");
       return;
     }
 
-    const newSavedName = {
-      id: Date.now().toString(),
+    saveMutation.mutate({
       firstName: firstName?.english || 'First',
       middleName: middleName?.english || '',
       hebrewName: hebrewName?.english || '',
       lastName: lastName || '',
       firstNameHebrew: firstName?.hebrew || '',
       hebrewNameHebrew: hebrewName?.hebrew || '',
-      savedAt: new Date().toISOString(),
-    };
-
-    const existing = localStorage.getItem("ledor-vador-saved-names");
-    const saved = existing ? JSON.parse(existing) : [];
-    saved.push(newSavedName);
-    localStorage.setItem("ledor-vador-saved-names", JSON.stringify(saved));
-
-    // Show confirmation
-    setShowSaveConfirmation(true);
-    setTimeout(() => setShowSaveConfirmation(false), 2000);
-    toast.success("Name idea saved!");
+    });
   };
 
   const handleAddName = (name: NameData, type: 'first' | 'middle' | 'hebrew') => {
