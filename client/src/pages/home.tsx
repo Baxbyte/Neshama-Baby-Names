@@ -14,19 +14,22 @@ import { BookmarkPlus, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { createSavedName } from "@/lib/api";
-
-interface Relative {
-  id: string;
-  name: string;
-  relation: string;
-}
+import { useAppState } from "@/lib/context";
 
 export default function Home() {
-  const [relatives, setRelatives] = useState<Relative[]>([]);
-  const [firstName, setFirstName] = useState<NameData | null>(null);
-  const [middleName, setMiddleName] = useState<NameData | null>(null);
-  const [hebrewName, setHebrewName] = useState<NameData | null>(null);
-  const [lastName, setLastName] = useState('');
+  const {
+    relatives,
+    setRelatives,
+    firstName,
+    setFirstName,
+    middleName,
+    setMiddleName,
+    hebrewName,
+    setHebrewName,
+    lastName,
+    setLastName,
+  } = useAppState();
+  
   const [activeDragItem, setActiveDragItem] = useState<NameData | null>(null);
   const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
