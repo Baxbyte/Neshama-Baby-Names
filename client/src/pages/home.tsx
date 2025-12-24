@@ -12,25 +12,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookmarkPlus, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { createSavedName } from "@/lib/api";
-import { useAppState } from "@/lib/context";
+
+interface Relative {
+  id: string;
+  name: string;
+  relation: string;
+}
 
 export default function Home() {
-  const {
-    relatives,
-    setRelatives,
-    firstName,
-    setFirstName,
-    middleName,
-    setMiddleName,
-    hebrewName,
-    setHebrewName,
-    lastName,
-    setLastName,
-  } = useAppState();
-  
-  const queryClient = useQueryClient();
+  const [relatives, setRelatives] = useState<Relative[]>([]);
+  const [firstName, setFirstName] = useState<NameData | null>(null);
+  const [middleName, setMiddleName] = useState<NameData | null>(null);
+  const [hebrewName, setHebrewName] = useState<NameData | null>(null);
+  const [lastName, setLastName] = useState('');
   const [activeDragItem, setActiveDragItem] = useState<NameData | null>(null);
   const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
@@ -82,7 +78,6 @@ export default function Home() {
   const saveMutation = useMutation({
     mutationFn: createSavedName,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["saved-names"] });
       setShowSaveConfirmation(true);
       setTimeout(() => setShowSaveConfirmation(false), 2000);
       toast.success("Name idea saved!");

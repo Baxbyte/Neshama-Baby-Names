@@ -37,10 +37,8 @@ export async function registerRoutes(
   // Create a new saved name
   app.post("/api/saved-names", async (req, res) => {
     try {
-      console.log("POST /api/saved-names - Request body:", JSON.stringify(req.body));
       const result = insertSavedNameSchema.safeParse(req.body);
       if (!result.success) {
-        console.error("Validation error:", result.error);
         return res.status(400).json({ 
           error: fromZodError(result.error).message 
         });
@@ -50,7 +48,7 @@ export async function registerRoutes(
       res.status(201).json(name);
     } catch (error) {
       console.error("Error creating saved name:", error);
-      res.status(500).json({ error: "Failed to create saved name", details: String(error) });
+      res.status(500).json({ error: "Failed to create saved name" });
     }
   });
 
