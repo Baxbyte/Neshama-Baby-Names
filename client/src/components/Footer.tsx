@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "wouter";
 
 export function Footer() {
   return (
@@ -22,38 +23,44 @@ export function Footer() {
           </div>
           
           <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2" aria-label="Legal">
-            <a
+            <Link
               href="/privacy"
               className="hover:text-primary transition-colors"
               data-testid="link-privacy"
             >
               Privacy Policy
-            </a>
+            </Link>
             <span className="hidden md:inline text-primary/30">|</span>
-            <a
+            <Link
               href="/terms"
               className="hover:text-primary transition-colors"
               data-testid="link-terms"
             >
               Terms of Service
-            </a>
+            </Link>
             <span className="hidden md:inline text-primary/30">|</span>
-            <a
+            <Link
               href="/cookies"
               className="hover:text-primary transition-colors"
               data-testid="link-cookies"
             >
               Cookie Policy
-            </a>
+            </Link>
             <span className="hidden md:inline text-primary/30">|</span>
-            <a
+            <Link
               href="/ccpa"
               className="hover:text-primary transition-colors"
               data-testid="link-ccpa"
             >
               Do Not Sell My Info
-            </a>
+            </Link>
           </nav>
+        </div>
+        
+        <div className="mt-6 pt-4 border-t border-primary/5 text-center">
+          <p className="text-xs text-muted-foreground/70 italic" data-testid="text-beta-notice">
+            We're working harder than your bubbe before Pesach! This site is in beta — some features are still cooking. Thanks for bearing with us!
+          </p>
         </div>
       </div>
     </footer>

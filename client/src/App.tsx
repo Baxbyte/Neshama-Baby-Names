@@ -7,12 +7,17 @@ import { AppProvider } from "@/lib/context";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import SavedNames from "@/pages/saved-names";
+import ComingSoon from "@/pages/coming-soon";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/saved" component={SavedNames} />
+      <Route path="/privacy" component={ComingSoon} />
+      <Route path="/terms" component={ComingSoon} />
+      <Route path="/cookies" component={ComingSoon} />
+      <Route path="/ccpa" component={ComingSoon} />
       <Route component={NotFound} />
     </Switch>
   );
