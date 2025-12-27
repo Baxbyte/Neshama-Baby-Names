@@ -17,6 +17,10 @@ interface LocalSavedName {
   firstNameHebrew: string;
   hebrewNameHebrew: string;
   savedAt: string;
+  firstNameMeaning?: string;
+  middleNameMeaning?: string;
+  hebrewNameMeaning?: string;
+  honoredRelatives?: string[];
 }
 
 const SAVED_NAMES_KEY = "neshama-saved-names";

@@ -77,7 +77,23 @@ export async function registerRoutes(
 
       const resend = new Resend(process.env.RESEND_API_KEY);
 
-      const namesHtml = savedNames.map((name: { firstName: string; middleName: string; lastName: string; hebrewName: string; hebrewNameHebrew: string }) => `
+      const namesHtml = savedNames.map((name: { 
+        firstName: string; 
+        middleName: string; 
+        lastName: string; 
+        hebrewName: string; 
+        hebrewNameHebrew: string;
+        firstNameMeaning?: string;
+        middleNameMeaning?: string;
+        hebrewNameMeaning?: string;
+        honoredRelatives?: string[];
+      }) => {
+        const meanings: string[] = [];
+        if (name.firstNameMeaning) meanings.push(`${name.firstName}: "${name.firstNameMeaning}"`);
+        if (name.middleNameMeaning && name.middleName) meanings.push(`${name.middleName}: "${name.middleNameMeaning}"`);
+        if (name.hebrewNameMeaning && name.hebrewName) meanings.push(`${name.hebrewName}: "${name.hebrewNameMeaning}"`);
+        
+        return `
         <div style="background: linear-gradient(135deg, #f8f6f3 0%, #ffffff 100%); border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #e8e4df;">
           <h3 style="margin: 0 0 8px 0; color: #1e3a5f; font-family: Georgia, serif; font-size: 24px;">
             ${name.firstName} ${name.middleName ? name.middleName + ' ' : ''}${name.lastName}
@@ -92,8 +108,23 @@ export async function registerRoutes(
               Hebrew: ${name.hebrewName}
             </p>
           ` : ''}
+          ${meanings.length > 0 ? `
+            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e8e4df;">
+              <p style="margin: 0 0 4px 0; color: #1e3a5f; font-size: 13px; font-weight: 600;">Name Meanings:</p>
+              <p style="margin: 0; color: #6b7280; font-size: 13px; line-height: 1.6;">
+                ${meanings.join('<br>')}
+              </p>
+            </div>
+          ` : ''}
+          ${name.honoredRelatives && name.honoredRelatives.length > 0 ? `
+            <div style="margin-top: 12px; padding: 12px; background: #fef9e7; border-radius: 8px; border: 1px solid #d4a853;">
+              <p style="margin: 0; color: #92670e; font-size: 13px;">
+                <strong>Honoring:</strong> ${name.honoredRelatives.join(', ')}
+              </p>
+            </div>
+          ` : ''}
         </div>
-      `).join('');
+      `}).join('');
 
       const emailHtml = `
         <!DOCTYPE html>
@@ -118,8 +149,21 @@ export async function registerRoutes(
               <p style="color: #9ca3af; font-size: 12px; font-style: italic; margin: 0;">
                 "Ledor Vador" — From Generation to Generation
               </p>
-              <p style="color: #9ca3af; font-size: 11px; margin: 16px 0 0 0;">
-                Saved from Neshama Baby Names
+              
+              <div style="margin: 24px 0;">
+                <a href="https://neshama-baby-names.replit.app" style="display: inline-block; background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                  Visit Neshama Baby Names
+                </a>
+              </div>
+              
+              <div style="margin-top: 20px; padding: 16px; background: #fef9e7; border-radius: 8px; border: 1px solid #d4a853;">
+                <p style="margin: 0; color: #92670e; font-size: 12px;">
+                  <strong>Beta Notice:</strong> Neshama Baby Names is currently in beta — we're working harder than your bubbe before Pesach to make it perfect! Your feedback helps us improve.
+                </p>
+              </div>
+              
+              <p style="color: #9ca3af; font-size: 11px; margin: 20px 0 0 0;">
+                &copy; 2025 Neshama Baby Names. All rights reserved.
               </p>
             </div>
           </div>

@@ -24,6 +24,10 @@ interface LocalSavedName {
   firstNameHebrew: string;
   hebrewNameHebrew: string;
   savedAt: string;
+  firstNameMeaning?: string;
+  middleNameMeaning?: string;
+  hebrewNameMeaning?: string;
+  honoredRelatives?: string[];
 }
 
 const SAVED_NAMES_KEY = "neshama-saved-names";
@@ -105,6 +109,10 @@ export default function Home() {
       firstNameHebrew: firstName?.hebrew || '',
       hebrewNameHebrew: hebrewName?.hebrew || '',
       savedAt: new Date().toISOString(),
+      firstNameMeaning: firstName?.meaning || '',
+      middleNameMeaning: middleName?.meaning || '',
+      hebrewNameMeaning: hebrewName?.meaning || '',
+      honoredRelatives: honoredRelatives,
     };
 
     const existing = localStorage.getItem(SAVED_NAMES_KEY);
