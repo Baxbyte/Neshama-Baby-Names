@@ -25,6 +25,7 @@ export default function SavedNames() {
   const [email, setEmail] = useState("");
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const [savedNames, setSavedNames] = useState<LocalSavedName[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -43,26 +44,44 @@ export default function SavedNames() {
     toast.success("Name idea removed");
   };
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) {
       toast.error("Please enter an email address");
       return;
     }
     
-    // In a real app, this would send an email via backend
-    // For now, we'll show a success message
-    const emailContent = savedNames.map(name => 
-      `${name.firstName} ${name.middleName} ${name.lastName}\nHebrew: ${name.hebrewName}`
-    ).join('\n\n');
+    if (savedNames.length === 0) {
+      toast.error("No saved names to send");
+      return;
+    }
+
+    setIsSending(true);
     
-    // Mock email send
-    toast.success("Email sent successfully!");
-    setEmailSent(true);
-    setShowEmailForm(false);
-    setEmail("");
-    
-    setTimeout(() => setEmailSent(false), 3000);
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, savedNames }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.details || errorData.error || 'Failed to send email');
+      }
+
+      toast.success("Email sent successfully!");
+      setEmailSent(true);
+      setShowEmailForm(false);
+      setEmail("");
+      
+      setTimeout(() => setEmailSent(false), 3000);
+    } catch (error) {
+      console.error("Email error:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to send email. Please try again.");
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -182,6 +201,7 @@ export default function SavedNames() {
                   <Button 
                     onClick={() => setShowEmailForm(true)}
                     className="w-full bg-secondary hover:bg-secondary/90 text-white"
+                    data-testid="button-show-email-form"
                   >
                     <Mail className="w-4 h-4 mr-2" />
                     Email Saved Names to Yourself
@@ -199,6 +219,7 @@ export default function SavedNames() {
                         className="bg-white/50 border-primary/10"
                         data-testid="input-email"
                         required
+                        disabled={isSending}
                       />
                     </div>
                     <div className="flex gap-3">
@@ -206,14 +227,17 @@ export default function SavedNames() {
                         type="submit"
                         className="flex-1 bg-secondary hover:bg-secondary/90 text-white"
                         data-testid="button-send-email"
+                        disabled={isSending}
                       >
-                        Send Email
+                        {isSending ? "Sending..." : "Send Email"}
                       </Button>
                       <Button 
                         type="button"
                         variant="outline"
                         onClick={() => setShowEmailForm(false)}
                         className="flex-1"
+                        disabled={isSending}
+                        data-testid="button-cancel-email"
                       >
                         Cancel
                       </Button>
