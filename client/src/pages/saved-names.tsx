@@ -100,7 +100,6 @@ export default function SavedNames() {
         </p>
         <div className="h-1 w-24 bg-secondary mx-auto mt-6 rounded-full" aria-hidden="true" />
       </header>
-
       <main className="max-w-4xl mx-auto">
         
         {/* Page title with back button */}
@@ -112,7 +111,7 @@ export default function SavedNames() {
           </Link>
           <div>
             <h2 className="text-3xl md:text-4xl font-display text-primary">Your Saved Jewish Baby Names</h2>
-            <p className="text-muted-foreground mt-1">Review and manage your meaningful name ideas for Brit Milah or Simchat Bat</p>
+            <p className="text-muted-foreground mt-1">Review and manage your name ideas.</p>
           </div>
         </div>
 
@@ -263,7 +262,6 @@ export default function SavedNames() {
           </>
         )}
       </main>
-      
       <Footer />
     </div>
   );
