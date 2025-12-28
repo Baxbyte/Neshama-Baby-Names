@@ -146,9 +146,19 @@ export default function Home() {
         <header className="max-w-7xl mx-auto mb-12 text-center">
           <h1 className="text-4xl md:text-6xl font-display text-primary mb-3">Neshama Baby Names</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-4">
-            Discover meaningful Jewish and Hebrew baby names. Honor your heritage by naming your child after loved ones using the Ashkenazi naming tradition.
+            Discover Meaningful Jewish &amp; Hebrew Baby Names. Honor your lineage and connect to your heritage by choosing a name that reflects your family's unique traditions and soul.
           </p>
           <div className="h-1 w-24 bg-secondary mx-auto mt-6 rounded-full" aria-hidden="true" />
+          
+          {/* SEO-friendly intro paragraph */}
+          <p className="text-sm text-muted-foreground max-w-3xl mx-auto mt-6 leading-relaxed">
+            Naming a Jewish baby is a sacred tradition that connects your child to their ancestors and the 
+            rich heritage of the Jewish people. Whether you follow Ashkenazi or Sephardic customs, choosing 
+            a meaningful Hebrew name helps preserve the memory of loved ones and passes on values from 
+            generation to generation. Our curated collection features traditional and modern Jewish names 
+            with spiritual significance—perfect for Brit Milah naming, Simchat Bat celebrations, or choosing 
+            a Hebrew name for conversion (Ger). Each name carries its own Neshamah (soul) and meaning.
+          </p>
         </header>
 
         <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[500px_1fr] gap-8">
@@ -291,11 +301,20 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <div className="bg-primary/5 p-6 rounded-xl border border-primary/10">
-                  <h3 className="font-serif text-lg text-primary mb-2">Naming Traditions</h3>
+                  <h3 className="font-serif text-lg text-primary mb-2">Jewish Naming Traditions</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                    <strong>Ashkenazi Tradition:</strong> Names honor deceased relatives to keep their memory alive (zichrono livracha). 
+                    The first letter or sound of the name often connects to the honored person. This tradition stems from 
+                    the belief that naming after the living may shorten their life.
+                  </p>
                   <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                    Ashkenazi tradition typically honors deceased relatives to keep their memory alive. 
-                    Sephardic tradition often honors living grandparents as a sign of respect and continuity.
-                    Consider the meaning of the name and the character of the person you are honoring.
+                    <strong>Sephardic Tradition:</strong> Names often honor living grandparents as a sign of respect and blessing. 
+                    The firstborn son is traditionally named after the paternal grandfather, and the firstborn daughter after the 
+                    paternal grandmother. This practice celebrates the continuity of family bonds across generations.
+                  </p>
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-4 italic">
+                    Both traditions celebrate the spiritual significance of naming—whether at a Brit Milah (circumcision ceremony) or 
+                    Simchat Bat (celebration of a daughter)—choosing a name that carries the Neshamah (soul) forward.
                   </p>
                   <div className="pt-4 border-t border-primary/10">
                     <p className="font-serif text-primary italic">Ledor Vador</p>
@@ -303,10 +322,16 @@ export default function Home() {
                   </div>
                </div>
                <div className="bg-secondary/10 p-6 rounded-xl border border-secondary/20">
-                  <h3 className="font-serif text-lg text-secondary-foreground mb-2">Did you know?</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <h3 className="font-serif text-lg text-secondary-foreground mb-2">The Spiritual Significance of Names</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                     The Hebrew name is used for religious rituals, calling to the Torah, and the Ketubah. 
-                    It is the spiritual essence of the person.
+                    It is the spiritual essence of the person—reflecting the Ruach Hakodesh (divine inspiration) 
+                    that guides parents in choosing a name for the Neshamah (soul).
+                  </p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Some families consider Gematria (numerical value of letters) when choosing names, while 
+                    others draw inspiration from Parsha names—names connected to the weekly Torah portion 
+                    read at the time of birth. These traditions add layers of meaning to your child's identity.
                   </p>
                </div>
             </div>

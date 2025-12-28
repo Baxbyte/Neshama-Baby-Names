@@ -1,8 +1,12 @@
-# Ledor Vador - Jewish Baby Naming Application
+# Neshama Baby Names - Jewish Baby Naming Application
 
 ## Overview
 
-Ledor Vador is a Jewish baby naming application that helps parents find meaningful names to honor their heritage. The app allows users to search through a curated database of Jewish names (both English and Hebrew), build complete name combinations using drag-and-drop functionality, and save their favorite name ideas. The name "Ledor Vador" (לדור ודור) means "from generation to generation" in Hebrew, reflecting the app's purpose of connecting past generations to the future through meaningful naming.
+Neshama Baby Names is a Jewish baby naming application that helps parents find meaningful names to honor their heritage. The app supports both **Ashkenazi and Sephardic naming traditions**, allowing users to search through a curated database of Jewish names (both English and Hebrew), build complete name combinations using drag-and-drop functionality, and save their favorite name ideas. The name "Neshama" (נשמה) means "soul" in Hebrew, reflecting the app's purpose of choosing names that carry spiritual significance—whether for Brit Milah, Simchat Bat, or conversion (Ger).
+
+### Naming Traditions Supported
+- **Ashkenazi Tradition**: Names honor deceased relatives to keep their memory alive (zichrono livracha)
+- **Sephardic Tradition**: Names often honor living grandparents as a sign of respect and blessing
 
 ## User Preferences
 

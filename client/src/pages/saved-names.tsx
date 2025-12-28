@@ -95,21 +95,24 @@ export default function SavedNames() {
         <Link href="/">
           <h1 className="text-4xl md:text-6xl font-display text-primary mb-3 cursor-pointer hover:opacity-80 transition-opacity">Neshama Baby Names</h1>
         </Link>
-        <div className="h-1 w-24 bg-secondary mx-auto mt-6 rounded-full" />
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-4">
+          Your saved Jewish and Hebrew baby name ideas—review, compare, and share your favorites.
+        </p>
+        <div className="h-1 w-24 bg-secondary mx-auto mt-6 rounded-full" aria-hidden="true" />
       </header>
 
-      <div className="max-w-4xl mx-auto">
+      <main className="max-w-4xl mx-auto">
         
         {/* Page title with back button */}
         <div className="flex items-center gap-4 mb-8">
           <Link href="/">
-            <Button variant="outline" size="icon" className="rounded-full">
+            <Button variant="outline" size="icon" className="rounded-full" aria-label="Back to name search">
               <ArrowLeft className="w-4 h-4" />
             </Button>
           </Link>
           <div>
-            <h2 className="text-3xl md:text-4xl font-display text-primary">Your Saved Names</h2>
-            <p className="text-muted-foreground mt-1">Review and manage your baby name ideas</p>
+            <h2 className="text-3xl md:text-4xl font-display text-primary">Your Saved Jewish Baby Names</h2>
+            <p className="text-muted-foreground mt-1">Review and manage your meaningful name ideas for Brit Milah or Simchat Bat</p>
           </div>
         </div>
 
@@ -259,7 +262,7 @@ export default function SavedNames() {
             </Card>
           </>
         )}
-      </div>
+      </main>
       
       <Footer />
     </div>
