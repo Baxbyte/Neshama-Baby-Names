@@ -145,10 +145,13 @@ export default function Home() {
         
         <header className="max-w-7xl mx-auto mb-12 text-center">
           <h1 className="text-4xl md:text-6xl font-display text-primary mb-3">Neshama Baby Names</h1>
-          <div className="h-1 w-24 bg-secondary mx-auto mt-6 rounded-full" />
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-4">
+            Discover meaningful Jewish and Hebrew baby names. Honor your heritage by naming your child after loved ones using the Ashkenazi naming tradition.
+          </p>
+          <div className="h-1 w-24 bg-secondary mx-auto mt-6 rounded-full" aria-hidden="true" />
         </header>
 
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[500px_1fr] gap-8">
+        <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[500px_1fr] gap-8">
           
           {/* Left Sidebar - Relatives and Search */}
           <div className="space-y-6">
@@ -309,7 +312,7 @@ export default function Home() {
             </div>
           </div>
 
-        </div>
+        </main>
       </div>
 
       <DragOverlay>

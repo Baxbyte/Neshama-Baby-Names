@@ -5,11 +5,54 @@ import { insertSavedNameSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { Resend } from "resend";
 
+const SITE_URL = "https://neshama-baby-names.replit.app";
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
   
+  // SEO: Serve sitemap.xml
+  app.get("/sitemap.xml", (_req, res) => {
+    const pages = [
+      { url: "/", priority: "1.0", changefreq: "weekly" },
+      { url: "/saved", priority: "0.8", changefreq: "daily" },
+      { url: "/privacy", priority: "0.3", changefreq: "monthly" },
+      { url: "/terms", priority: "0.3", changefreq: "monthly" },
+      { url: "/cookies", priority: "0.3", changefreq: "monthly" },
+      { url: "/ccpa", priority: "0.3", changefreq: "monthly" },
+    ];
+
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${pages.map(page => `  <url>
+    <loc>${SITE_URL}${page.url}</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+
+    res.header("Content-Type", "application/xml");
+    res.send(sitemap);
+  });
+
+  // SEO: Serve robots.txt
+  app.get("/robots.txt", (_req, res) => {
+    const robotsTxt = `# Neshama Baby Names - robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: ${SITE_URL}/sitemap.xml
+
+# Crawl-delay suggestion (optional)
+Crawl-delay: 1
+`;
+    res.header("Content-Type", "text/plain");
+    res.send(robotsTxt);
+  });
+
   // Get all saved names
   app.get("/api/saved-names", async (_req, res) => {
     try {
