@@ -145,9 +145,8 @@ export default function Home() {
         
         <header className="max-w-7xl mx-auto mb-12 text-center">
           <h1 className="text-4xl md:text-6xl font-display text-primary mb-3">Neshama Baby Names</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-4">
-            Discover Meaningful Jewish &amp; Hebrew Baby Names. Honor your lineage and connect to your heritage by choosing a name that reflects your family's unique traditions and soul.
-          </p>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-4">Discover Meaningful Jewish & Hebrew Baby Names.
+</p>
           <div className="h-1 w-24 bg-secondary mx-auto mt-6 rounded-full" aria-hidden="true" />
           
           {/* SEO-friendly intro paragraph */}
@@ -339,7 +338,6 @@ export default function Home() {
 
         </main>
       </div>
-
       <DragOverlay>
         {activeDragItem ? (
           <div className="w-[300px]">
@@ -347,9 +345,7 @@ export default function Home() {
           </div>
         ) : null}
       </DragOverlay>
-
       <Footer />
-
     </DndContext>
   );
 }
