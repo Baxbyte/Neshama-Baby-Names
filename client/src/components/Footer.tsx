@@ -8,18 +8,6 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-muted-foreground">
           <div className="text-center md:text-left">
             <p>&copy; 2025 Neshama Baby Names. All rights reserved.</p>
-            <p className="mt-1">
-              Designed by:{" "}
-              <a
-                href="https://www.linkedin.com/in/brett-axler-11577142/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:text-secondary transition-colors underline underline-offset-2"
-                data-testid="link-designer"
-              >
-                Brett Axler
-              </a>
-            </p>
           </div>
           
           <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2" aria-label="Legal">
